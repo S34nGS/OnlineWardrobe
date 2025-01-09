@@ -55,6 +55,11 @@ class User extends Authenticatable
         return $this->hasMany(Clothing::class);
     }
 
+    public function clothes()
+    {
+        return $this->belongsToMany(Clothing::class, 'user_clothing'); // Pivot table: 'user_clothing'
+    }
+    
     /**
      * Relationship with the Outfit model.
      *
