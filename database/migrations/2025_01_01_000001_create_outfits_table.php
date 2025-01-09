@@ -11,12 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('clothing', function (Blueprint $table) {
+        Schema::create('outfits', function (Blueprint $table) {
             $table->id();
-            $table->string('file_path'); // Pad naar afbeelding
-            $table->string('name'); // Naam van kledingstuk
-            $table->string('color')->nullable(); // Kleur van kledingstuk
-            $table->foreignId('category_id')->constrained('categories'); // Koppeling met categorie
+            $table->string('name'); // Naam van de outfit
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Koppeling met gebruiker
             $table->timestamps();
         });
@@ -27,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('clothing');
+        Schema::dropIfExists('outfits');
     }
 };
