@@ -2,72 +2,76 @@
 
 @section('content')
     <div class="container mx-auto py-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <!-- Petten / Hoeden Category -->
-            <div id="category1">
-                <h2 class="text-2xl font-semibold mb-4">Petten / Hoeden</h2>
-                <div class="grid grid-cols-2 gap-4">
-                    @foreach ($clothings as $clothing)
-                        @if($clothing->category->name == 'Petten/Hoeden')
-                            <div class="border p-4">
-                                <img src="{{ $clothing->file_path }}" alt="{{ $clothing->name }}" class="w-full">
-                                <h3 class="text-lg font-semibold mt-2">{{ $clothing->name }}</h3>
-                            </div>
-                        @endif
-                    @endforeach
+        <div class="flex justify-center space-x-8">
+
+            <!-- Clothing categories section -->
+            <div class="flex-1 grid grid-cols-1 gap-8">
+                <!-- Petten / Hoeden Category -->
+                <div id="category1" class="mb-8 flex justify-center">
+                    <h2 class="text-2xl font-semibold mb-4 text-center">Petten / Hoeden</h2>
+                    <div class="grid grid-cols-1 gap-4">
+                        @foreach ($clothings as $clothing)
+                            @if($clothing->category->name == 'Petten/Hoeden')
+                                <div class="relative flex justify-center">
+                                    <img src="{{ asset('storage/' . $clothing->file_path) }}" alt="{{ $clothing->name }}" class="w-64 h-64 object-cover rounded-md">
+                                    <h3 class="absolute bottom-4 left-4 text-white bg-black bg-opacity-50 px-2 py-1">{{ $clothing->name }}</h3>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- T-shirts / Jassen Category -->
+                <div id="category2" class="mb-8 flex justify-center">
+                    <h2 class="text-2xl font-semibold mb-4 text-center">T-shirts / Jassen</h2>
+                    <div class="grid grid-cols-1 gap-4">
+                        @foreach ($clothings as $clothing)
+                            @if($clothing->category->name == 'T-shirts / Jassen')
+                                <div class="relative flex justify-center">
+                                    <img src="{{ asset('storage/' . $clothing->file_path) }}" alt="{{ $clothing->name }}" class="w-64 h-64 object-cover rounded-md">
+                                    <h3 class="absolute bottom-4 left-4 text-white bg-black bg-opacity-50 px-2 py-1">{{ $clothing->name }}</h3>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- Broeken Category -->
+                <div id="category3" class="mb-8 flex justify-center">
+                    <h2 class="text-2xl font-semibold mb-4 text-center">Broeken</h2>
+                    <div class="grid grid-cols-1 gap-4">
+                        @foreach ($clothings as $clothing)
+                            @if($clothing->category->name == 'Broeken')
+                                <div class="relative flex justify-center">
+                                    <img src="{{ asset('storage/' . $clothing->file_path) }}" alt="{{ $clothing->name }}" class="w-64 h-64 object-cover rounded-md">
+                                    <h3 class="absolute bottom-4 left-4 text-white bg-black bg-opacity-50 px-2 py-1">{{ $clothing->name }}</h3>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
+                </div>
+
+                <!-- Schoenen Category -->
+                <div id="category4" class="mb-8 flex justify-center">
+                    <h2 class="text-2xl font-semibold mb-4 text-center">Schoenen</h2>
+                    <div class="grid grid-cols-1 gap-4">
+                        @foreach ($clothings as $clothing)
+                            @if($clothing->category->name == 'Schoenen')
+                                <div class="relative flex justify-center">
+                                    <img src="{{ asset('storage/' . $clothing->file_path) }}" alt="{{ $clothing->name }}" class="w-64 h-64 object-cover rounded-md">
+                                    <h3 class="absolute bottom-4 left-4 text-white bg-black bg-opacity-50 px-2 py-1">{{ $clothing->name }}</h3>
+                                </div>
+                            @endif
+                        @endforeach
+                    </div>
                 </div>
             </div>
 
-            <!-- T-shirts / Jassen Category -->
-            <div id="category2">
-                <h2 class="text-2xl font-semibold mb-4">T-shirts / Jassen</h2>
-                <div class="grid grid-cols-2 gap-4">
-                    @foreach ($clothings as $clothing)
-                        @if($clothing->category->name == 'T-shirts/Jassen')
-                            <div class="border p-4">
-                                <img src="{{ $clothing->file_path }}" alt="{{ $clothing->name }}" class="w-full">
-                                <h3 class="text-lg font-semibold mt-2">{{ $clothing->name }}</h3>
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
+            <!-- Buttons Section -->
+            <div class="flex flex-col items-center justify-center space-y-4">
+                <button id="randomize" class="bg-blue-500 text-white py-2 px-4 rounded-md w-32">Randomize</button>
+                <button id="save" class="bg-green-500 text-white py-2 px-4 rounded-md w-32">Save</button>
             </div>
-
-            <!-- Broeken Category -->
-            <div id="category3">
-                <h2 class="text-2xl font-semibold mb-4">Broeken</h2>
-                <div class="grid grid-cols-2 gap-4">
-                    @foreach ($clothings as $clothing)
-                        @if($clothing->category->name == 'Broeken')
-                            <div class="border p-4">
-                                <img src="{{ $clothing->file_path }}" alt="{{ $clothing->name }}" class="w-full">
-                                <h3 class="text-lg font-semibold mt-2">{{ $clothing->name }}</h3>
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-
-            <!-- Schoenen Category -->
-            <div id="category4">
-                <h2 class="text-2xl font-semibold mb-4">Schoenen</h2>
-                <div class="grid grid-cols-2 gap-4">
-                    @foreach ($clothings as $clothing)
-                        @if($clothing->category->name == 'Schoenen')
-                            <div class="border p-4">
-                                <img src="{{ $clothing->file_path }}" alt="{{ $clothing->name }}" class="w-full">
-                                <h3 class="text-lg font-semibold mt-2">{{ $clothing->name }}</h3>
-                            </div>
-                        @endif
-                    @endforeach
-                </div>
-            </div>
-        </div>
-
-        <!-- Randomize and Save Buttons -->
-        <div class="mt-8 flex justify-between">
-            <button id="randomize" class="bg-blue-500 text-white py-2 px-4 rounded">Randomize</button>
-            <button id="save" class="bg-green-500 text-white py-2 px-4 rounded">Save</button>
         </div>
     </div>
 
@@ -77,10 +81,9 @@
             fetch('/randomize-clothes')
                 .then(response => response.json())
                 .then(data => {
-                    // Update the UI with randomized clothes
+                    // Populate the clothing items with randomized data
                     console.log(data);
-                    // Example of how you might update the page
-                    // For now, just log the randomized clothes.
+                    // Update the UI with random clothes
                 });
         });
 

@@ -3,103 +3,96 @@
 namespace App\Http\Controllers;
 
 use App\Models\Clothing;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class ClothingController extends Controller
 {
-    /**
-     * Display a listing of the resource (Home page).
-     */
+    // Show the list of clothing items
     public function index()
     {
-        // Retrieve all clothing items
-        $clothings = Clothing::all();
-
-        // Return the 'home' view and pass the clothing data
-        return view('home', compact('clothings'));
+        $clothings = Clothing::all(); // Fetch all clothing items
+        return view('clothing.index', compact('clothings'));
     }
 
-    /**
-     * Show the form for creating a new clothing item.
-     */
+    // Show the form for creating a new clothing item
     public function create()
     {
-        return view('clothing.create');
+        $categories = Category::all(); // Fetch all categories
+        return view('clothing.create', compact('categories'));
     }
 
-    /**
-     * Store a newly created clothing item in storage.
-     */
+    // Store a new clothing item
     public function store(Request $request)
     {
-        // Validation for incoming data
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'color' => 'required|string|max:50',
+        $request->validate([
+            'name' => 'required|string',
+            'color' => 'required|string',
             'category_id' => 'required|exists:categories,id',
-            'file_path' => 'required|string',  // You might want to handle file uploads separately
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Image validation
         ]);
 
-        // Create a new clothing item and save to the database
-        $clothing = Clothing::create([
-            'name' => $validated['name'],
-            'color' => $validated['color'],
-            'category_id' => $validated['category_id'],
-            'user_id' => auth()->id(), // Save the user id (assuming logged in user)
-            'file_path' => $validated['file_path'],
+        // Store the uploaded file and get its path
+        $filePath = $request->file('image') ? $request->file('image')->store('clothes', 'public') : null;
+
+        // Create the clothing item and associate it with the category
+        Clothing::create([
+            'name' => $request->name,
+            'color' => $request->color,
+            'category_id' => $request->category_id,
+            'file_path' => $filePath, // Save the image file path
         ]);
 
-        return redirect()->route('clothing.index')->with('success', 'Clothing item created successfully!');
+        return redirect()->route('clothing.index')->with('success', 'Clothing item added successfully.');
     }
 
-    /**
-     * Display the specified clothing item.
-     */
+    // Show a specific clothing item
     public function show(Clothing $clothing)
     {
         return view('clothing.show', compact('clothing'));
     }
 
-    /**
-     * Show the form for editing the specified clothing item.
-     */
+    // Show the form for editing a clothing item
     public function edit(Clothing $clothing)
     {
-        return view('clothing.edit', compact('clothing'));
+        $categories = Category::all(); // Fetch all categories
+        return view('clothing.edit', compact('clothing', 'categories'));
     }
 
-    /**
-     * Update the specified clothing item in storage.
-     */
+    // Update a clothing item
     public function update(Request $request, Clothing $clothing)
     {
-        // Validation for incoming data
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'color' => 'required|string|max:50',
+        $request->validate([
+            'name' => 'required|string',
+            'color' => 'required|string',
             'category_id' => 'required|exists:categories,id',
-            'file_path' => 'nullable|string',  // Handle file update if needed
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Image validation
         ]);
 
-        // Update clothing item data
+        // Store the uploaded file and get its path if there is a new image
+        $filePath = $request->file('image') ? $request->file('image')->store('clothes', 'public') : $clothing->file_path;
+
+        // Update the clothing item
         $clothing->update([
-            'name' => $validated['name'],
-            'color' => $validated['color'],
-            'category_id' => $validated['category_id'],
-            'file_path' => $validated['file_path'] ?? $clothing->file_path, // Only update file_path if provided
+            'name' => $request->name,
+            'color' => $request->color,
+            'category_id' => $request->category_id,
+            'file_path' => $filePath, // Update the image file path
         ]);
 
-        return redirect()->route('clothing.index')->with('success', 'Clothing item updated successfully!');
+        return redirect()->route('clothing.index')->with('success', 'Clothing item updated successfully.');
     }
 
-    /**
-     * Remove the specified clothing item from storage.
-     */
+    // Delete a clothing item
     public function destroy(Clothing $clothing)
     {
-        // Delete the clothing item
+        // Delete the clothing item and the image file if it exists
+        if ($clothing->file_path) {
+            \Storage::disk('public')->delete($clothing->file_path);
+        }
+
         $clothing->delete();
 
-        return redirect()->route('clothing.index')->with('success', 'Clothing item deleted successfully!');
+        return redirect()->route('clothing.index')->with('success', 'Clothing item deleted successfully.');
     }
 }

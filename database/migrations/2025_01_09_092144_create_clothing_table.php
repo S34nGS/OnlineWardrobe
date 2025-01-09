@@ -29,8 +29,10 @@ return new class extends Migration
      *
      * @return void
      */
-    public function down(): void
-    {
-        Schema::dropIfExists('clothing');
-    }
+    public function down()
+{
+    Schema::table('clothing', function (Blueprint $table) {
+        $table->dropColumn('file_path');  // Drop the file_path column if rolled back
+    });
+}
 };
