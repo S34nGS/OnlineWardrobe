@@ -16,10 +16,10 @@ class Clothing extends Model
      */
     protected $fillable = [
         'file_path',
-        'name',       // Naam van kledingstuk
-        'color',      // Kleur van kledingstuk
-        'category_id', // Foreign key voor categorie
-        'user_id',    // Foreign key voor gebruiker
+        'name',       // Name of the clothing item
+        'color',      // Color of the clothing item
+        'category_id', // Foreign key for category
+        'user_id',    // Foreign key for the user (when a user adds clothing)
     ];
 
     /**
@@ -51,4 +51,14 @@ class Clothing extends Model
     {
         return $this->belongsToMany(Outfit::class, 'outfit_details');
     }
-
+    
+    /**
+     * Relationship with User model for clothing items stored in the user's wardrobe.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function savedByUsers()
+    {
+        return $this->belongsToMany(User::class, 'user_clothing');
+    }
+}
