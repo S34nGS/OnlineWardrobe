@@ -15,15 +15,16 @@ class Clothing extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'file_path',
-        'name',       // Name of the clothing item
-        'color',      // Color of the clothing item
+        'file_path',   // Path to the image file
+        'name',        // Name of the clothing item
+        'color',       // Color of the clothing item
         'category_id', // Foreign key for category
-        'user_id',    // Foreign key for the user (when a user adds clothing)
+        'user_id',     // Foreign key for the user (when a user adds clothing)
     ];
 
     /**
-     * Relationship with the User model.
+     * Define the relationship between Clothing and User.
+     * Each clothing item belongs to a specific user.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -33,7 +34,8 @@ class Clothing extends Model
     }
 
     /**
-     * Relationship with the Category model.
+     * Define the relationship between Clothing and Category.
+     * Each clothing item belongs to one category.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
@@ -43,7 +45,8 @@ class Clothing extends Model
     }
 
     /**
-     * Relationship with the Outfit model through outfit_details table.
+     * Define the many-to-many relationship between Clothing and Outfit.
+     * This allows a clothing item to be part of many outfits.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
@@ -51,9 +54,10 @@ class Clothing extends Model
     {
         return $this->belongsToMany(Outfit::class, 'outfit_details');
     }
-    
+
     /**
-     * Relationship with User model for clothing items stored in the user's wardrobe.
+     * Define the many-to-many relationship between Clothing and Users.
+     * This relationship tracks which users have saved a clothing item in their wardrobe.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */

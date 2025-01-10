@@ -1,51 +1,52 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mx-auto">
-        <h1 class="text-2xl font-semibold mb-6">Clothing Items</h1>
+    <div class="min-h-screen bg-gray-100 flex items-center justify-center py-8">
 
-        <!-- Link to create new clothing item -->
-        <a href="{{ route('clothing.create') }}" class="bg-blue-500 text-white py-2 px-4 rounded-md mb-4">Add New Clothing</a>
+        <!-- Main Container for Clothing Sections and Buttons -->
+        <div class="container mx-auto flex space-x-8">
 
-        <!-- Table for displaying clothing items -->
-        <table class="w-full border border-gray-300 table-auto">
-            <thead>
-                <tr>
-                    <!-- Added column for Image -->
-                    <th class="border-b p-2 text-left">Image</th> 
-                    <th class="border-b p-2 text-left">Name</th>
-                    <th class="border-b p-2 text-left">Color</th>
-                    <th class="border-b p-2 text-left">Category</th>
-                    <th class="border-b p-2 text-left">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($clothings as $clothing)
-                    <tr>
-                        <td class="border-b p-2">
-                            <!-- Check if the clothing has an image -->
-                            @if($clothing->file_path)
-                                <img src="{{ asset('storage/' . $clothing->file_path) }}" alt="{{ $clothing->name }}" class="w-16 h-16 object-cover rounded-md">
-                            @else
-                                <span class="text-gray-500">No image</span>
-                            @endif
-                        </td>
-                        <td class="border-b p-2">{{ $clothing->name }}</td>
-                        <td class="border-b p-2">{{ $clothing->color }}</td>
-                        <td class="border-b p-2">{{ $clothing->category->name }}</td>
-                        <td class="border-b p-2">
-                            <!-- Action buttons for view, edit, and delete -->
-                            <a href="{{ route('clothing.show', $clothing->id) }}" class="text-blue-500">View</a> |
-                            <a href="{{ route('clothing.edit', $clothing->id) }}" class="text-green-500">Edit</a> |
-                            <form action="{{ route('clothing.destroy', $clothing->id) }}" method="POST" class="inline-block">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-500">Delete</button>
-                            </form>
-                        </td>
-                    </tr>
+            <!-- Clothing Categories Section (Vertically Centered) -->
+            <div class="flex flex-col space-y-12 w-full lg:w-3/4">
+
+                <!-- Loop through all categories -->
+                @foreach ($categories as $category)
+                    <!-- Category Section -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h2 class="text-2xl font-semibold mb-4 text-center">{{ $category->name }}</h2>
+                        <div class="grid grid-cols-2 gap-4">
+
+                            <!-- Loop through the clothing items for this category -->
+                            @foreach ($groupedClothings->get($category->id, []) as $clothing)
+                                <div class="border p-4 rounded-lg shadow-sm hover:shadow-md flex flex-col items-center">
+                                    <!-- Center the image in the box -->
+                                    <img src="{{ asset('storage/' . $clothing->file_path) }}" alt="{{ $clothing->name }}" class="w-32 h-32 object-cover mx-auto mb-4 rounded-lg shadow-md">
+                                    <p class="text-center text-lg font-semibold">{{ $clothing->name }}</p>
+                                </div>
+                            @endforeach
+
+                        </div>
+                    </div>
                 @endforeach
-            </tbody>
-        </table>
+
+            </div>
+
+            <!-- Right Side: Buttons (Randomize and Save) -->
+            <div class="flex flex-col items-center space-y-6 w-1/4 px-4">
+                <button class="bg-blue-600 text-white py-3 px-6 rounded-md shadow-md hover:bg-blue-700 w-full transition duration-300 ease-in-out">
+                    Randomize
+                </button>
+                <button class="bg-green-600 text-white py-3 px-6 rounded-md shadow-md hover:bg-green-700 w-full transition duration-300 ease-in-out">
+                    Save
+                </button>
+
+                <!-- Add New Clothing Button -->
+                <a href="{{ route('clothing.create') }}" class="bg-blue-500 text-white py-3 px-6 rounded-md shadow-md hover:bg-blue-600 w-full transition duration-300 ease-in-out">
+                    Add New Clothing
+                </a>
+            </div>
+
+        </div>
+
     </div>
 @endsection
