@@ -1,3 +1,5 @@
+// resources/views/clothing/create.blade.php
+
 @extends('layouts.app')
 
 @section('content')
@@ -7,7 +9,7 @@
         <!-- Make sure to add enctype="multipart/form-data" to the form for image uploads -->
         <form action="{{ route('clothing.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
-            
+
             <!-- Name Field -->
             <div class="mb-4">
                 <label for="name" class="block text-sm font-medium text-gray-700">Name</label>

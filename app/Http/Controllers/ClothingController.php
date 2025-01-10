@@ -6,18 +6,18 @@ use App\Models\Clothing;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
+
 class ClothingController extends Controller
 {
     public function index()
     {
-        // Fetch all clothing items
-        $clothings = Clothing::all();
+        $clothings = Clothing::all(); // Alle kleding ophalen
+        $categories = Category::all(); // Alle categorieën ophalen
+        
+        // Groepeer de kledingitems per categorie
+        $groupedClothings = $clothings->groupBy('category_id');
     
-        // Fetch all categories
-        $categories = Category::all();
-    
-        // Pass both $clothings and $categories to the view
-        return view('clothing.index', compact('clothings', 'categories'));
+        return view('clothing.index', compact('groupedClothings', 'categories'));
     }
     
     
@@ -30,27 +30,32 @@ class ClothingController extends Controller
 
     // Store a new clothing item
     public function store(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string',
-            'color' => 'required|string',
-            'category_id' => 'required|exists:categories,id',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Image validation
-        ]);
+{
+    // Validate incoming request
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'color' => 'required|string|max:255',
+        'category_id' => 'required|exists:categories,id',
+        'image' => 'required|image|max:10240', // Validate the image file
+    ]);
 
-        // Store the uploaded file and get its path
-        $filePath = $request->file('image') ? $request->file('image')->store('clothes', 'public') : null;
+    // Store the image and get the file path
+    $imagePath = $request->file('image')->store('clothes', 'public');
 
-        // Create the clothing item and associate it with the category
-        Clothing::create([
-            'name' => $request->name,
-            'color' => $request->color,
-            'category_id' => $request->category_id,
-            'file_path' => $filePath, // Save the image file path
-        ]);
+    // Create a new clothing item and assign the authenticated user's ID
+    $clothing = Clothing::create([
+        'name' => $request->name,
+        'color' => $request->color,
+        'category_id' => $request->category_id,
+        'file_path' => $imagePath,
+        'user_id' => auth()->id(), // Automatically assign the user_id
+    ]);
 
-        return redirect()->route('clothing.index')->with('success', 'Clothing item added successfully.');
-    }
+    // Redirect the user with a success message
+    return redirect()->route('clothing.index')->with('success', 'Clothing added successfully!');
+}
+
+    
 
     // Show a specific clothing item
     public function show(Clothing $clothing)

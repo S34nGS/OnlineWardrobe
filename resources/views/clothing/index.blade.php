@@ -9,57 +9,25 @@
             <!-- Clothing Categories Section (Vertically Centered) -->
             <div class="flex flex-col space-y-12 w-full lg:w-3/4">
 
-                <!-- Petten / Hoeden Section -->
-                <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <h2 class="text-2xl font-semibold mb-4 text-center">Petten & Hoeden</h2>
-                    <div class="grid grid-cols-2 gap-4">
-                        @foreach ($clothings->where('category_id', 1) as $clothing)
-                            <div class="border p-4 rounded-lg shadow-sm hover:shadow-md">
-                                <img src="{{ asset('storage/' . $clothing->file_path) }}" alt="{{ $clothing->name }}" class="w-32 h-32 object-cover mx-auto mb-2">
-                                <p class="text-center text-lg">{{ $clothing->name }}</p>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
+                <!-- Loop through all categories -->
+                @foreach ($categories as $category)
+                    <!-- Category Section -->
+                    <div class="bg-white p-6 rounded-lg shadow-lg">
+                        <h2 class="text-2xl font-semibold mb-4 text-center">{{ $category->name }}</h2>
+                        <div class="grid grid-cols-2 gap-4">
 
-                <!-- T-Shirts / Jassen Section -->
-                <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <h2 class="text-2xl font-semibold mb-4 text-center">T-Shirts & Jassen</h2>
-                    <div class="grid grid-cols-2 gap-4">
-                        @foreach ($clothings->where('category_id', 2) as $clothing)
-                            <div class="border p-4 rounded-lg shadow-sm hover:shadow-md">
-                                <img src="{{ asset('storage/' . $clothing->file_path) }}" alt="{{ $clothing->name }}" class="w-32 h-32 object-cover mx-auto mb-2">
-                                <p class="text-center text-lg">{{ $clothing->name }}</p>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
+                            <!-- Loop through the clothing items for this category -->
+                            @foreach ($groupedClothings->get($category->id, []) as $clothing)
+                                <div class="border p-4 rounded-lg shadow-sm hover:shadow-md flex flex-col items-center">
+                                    <!-- Center the image in the box -->
+                                    <img src="{{ asset('storage/' . $clothing->file_path) }}" alt="{{ $clothing->name }}" class="w-32 h-32 object-cover mx-auto mb-4 rounded-lg shadow-md">
+                                    <p class="text-center text-lg font-semibold">{{ $clothing->name }}</p>
+                                </div>
+                            @endforeach
 
-                <!-- Broeken Section -->
-                <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <h2 class="text-2xl font-semibold mb-4 text-center">Broeken</h2>
-                    <div class="grid grid-cols-2 gap-4">
-                        @foreach ($clothings->where('category_id', 3) as $clothing)
-                            <div class="border p-4 rounded-lg shadow-sm hover:shadow-md">
-                                <img src="{{ asset('storage/' . $clothing->file_path) }}" alt="{{ $clothing->name }}" class="w-32 h-32 object-cover mx-auto mb-2">
-                                <p class="text-center text-lg">{{ $clothing->name }}</p>
-                            </div>
-                        @endforeach
+                        </div>
                     </div>
-                </div>
-
-                <!-- Schoenen Section -->
-                <div class="bg-white p-6 rounded-lg shadow-lg">
-                    <h2 class="text-2xl font-semibold mb-4 text-center">Schoenen</h2>
-                    <div class="grid grid-cols-2 gap-4">
-                        @foreach ($clothings->where('category_id', 4) as $clothing)
-                            <div class="border p-4 rounded-lg shadow-sm hover:shadow-md">
-                                <img src="{{ asset('storage/' . $clothing->file_path) }}" alt="{{ $clothing->name }}" class="w-32 h-32 object-cover mx-auto mb-2">
-                                <p class="text-center text-lg">{{ $clothing->name }}</p>
-                            </div>
-                        @endforeach
-                    </div>
-                </div>
+                @endforeach
 
             </div>
 
@@ -73,10 +41,9 @@
                 </button>
 
                 <!-- Add New Clothing Button -->
-                <a href="{{ route('clothing.create') }}" class="bg-blue-500 text-white py-3 px-6 rounded-md shadow-md hover:bg-blue-600 w-full text-center transition duration-300 ease-in-out">
-                Add New Clothing
+                <a href="{{ route('clothing.create') }}" class="bg-blue-500 text-white py-3 px-6 rounded-md shadow-md hover:bg-blue-600 w-full transition duration-300 ease-in-out">
+                    Add New Clothing
                 </a>
-
             </div>
 
         </div>
