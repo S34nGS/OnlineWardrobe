@@ -10,15 +10,18 @@ use Illuminate\Http\Request;
 class ClothingController extends Controller
 {
     public function index()
-    {
-        $clothings = Clothing::all(); // Alle kleding ophalen
-        $categories = Category::all(); // Alle categorieën ophalen
-        
-        // Groepeer de kledingitems per categorie
-        $groupedClothings = $clothings->groupBy('category_id');
-    
-        return view('clothing.index', compact('groupedClothings', 'categories'));
-    }
+{
+    // Retrieve all clothing items and their associated categories
+    $clothings = Clothing::all(); // Get all clothing items
+    $categories = Category::all(); // Get all categories
+
+    // Group clothing items by category_id
+    $groupedClothings = $clothings->groupBy('category_id'); // Group clothing items by category_id
+
+    // Pass both categories and grouped clothing items to the view
+    return view('clothing.index', compact('groupedClothings', 'categories'));
+}
+
     
     
     // Show the form for creating a new clothing item

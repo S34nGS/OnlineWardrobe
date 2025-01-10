@@ -14,16 +14,28 @@
                     <!-- Category Section -->
                     <div class="bg-white p-6 rounded-lg shadow-lg">
                         <h2 class="text-2xl font-semibold mb-4 text-center">{{ $category->name }}</h2>
-                        <div class="grid grid-cols-2 gap-4">
 
-                            <!-- Loop through the clothing items for this category -->
-                            @foreach ($groupedClothings->get($category->id, []) as $clothing)
-                                <div class="border p-4 rounded-lg shadow-sm hover:shadow-md flex flex-col items-center">
-                                    <!-- Center the image in the box -->
-                                    <img src="{{ asset('storage/' . $clothing->file_path) }}" alt="{{ $clothing->name }}" class="w-32 h-32 object-cover mx-auto mb-4 rounded-lg shadow-md">
-                                    <p class="text-center text-lg font-semibold">{{ $clothing->name }}</p>
-                                </div>
-                            @endforeach
+                        <!-- Debugging: Output the number of clothing items in this category -->
+                        <p class="text-center text-gray-500 mb-4">
+                            Number of clothing items in this category: 
+                            {{ count($groupedClothings->get($category->id, [])) }}
+                        </p>
+
+                        <div class="flex flex-wrap justify-center gap-4"> <!-- Centering the items -->
+
+                            <!-- Loop through the clothing items that belong to this category -->
+                            @if(isset($groupedClothings[$category->id]))
+                                @foreach ($groupedClothings[$category->id] as $clothing)
+                                    <div class="border p-4 rounded-lg shadow-sm hover:shadow-md flex flex-col items-center">
+                                        <!-- Center the image in the box -->
+                                        <img src="{{ asset('storage/' . $clothing->file_path) }}" alt="{{ $clothing->name }}" class="w-32 h-32 object-cover mx-auto mb-4 rounded-lg shadow-md">
+                                        <p class="text-center text-lg font-semibold">
+                                            {{ $clothing->name }} 
+                                            <span class="text-sm text-gray-500">({{ $clothing->color }})</span>
+                                        </p>
+                                    </div>
+                                @endforeach
+                            @endif
 
                         </div>
                     </div>

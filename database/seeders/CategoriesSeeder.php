@@ -13,10 +13,10 @@ class CategoriesSeeder extends Seeder
     public function run(): void
     {
         // Inserting categories using the Category model
-        Category::create(['name' => 'Shirts']);
+        Category::create(['name' => 'Petten & Hoeden']);
+        Category::create(['name' => 'Shirts & Jassen']);
         Category::create(['name' => 'Broeken']);
         Category::create(['name' => 'Schoenen']);
-        Category::create(['name' => 'Jassen']);
         Category::create(['name' => 'Accessoires']);
     }
 }
