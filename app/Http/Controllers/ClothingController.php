@@ -8,13 +8,19 @@ use Illuminate\Http\Request;
 
 class ClothingController extends Controller
 {
-    // Show the list of clothing items
     public function index()
     {
-        $clothings = Clothing::all(); // Fetch all clothing items
-        return view('clothing.index', compact('clothings'));
+        // Fetch all clothing items
+        $clothings = Clothing::all();
+    
+        // Fetch all categories
+        $categories = Category::all();
+    
+        // Pass both $clothings and $categories to the view
+        return view('clothing.index', compact('clothings', 'categories'));
     }
-
+    
+    
     // Show the form for creating a new clothing item
     public function create()
     {

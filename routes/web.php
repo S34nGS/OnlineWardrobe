@@ -1,8 +1,13 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClothingController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+
+
+Route::resource('categories', CategoryController::class);
+
 
 // Home route - Fetches clothing items and passes them to the view
 Route::get('/', [ClothingController::class, 'index'])
