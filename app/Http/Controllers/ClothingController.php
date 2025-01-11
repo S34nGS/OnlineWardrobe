@@ -6,24 +6,22 @@ use App\Models\Clothing;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
-
 class ClothingController extends Controller
 {
+    // Show the index page with all clothing items
     public function index()
-{
-    // Retrieve all clothing items and their associated categories
-    $clothings = Clothing::all(); // Get all clothing items
-    $categories = Category::all(); // Get all categories
+    {
+        // Retrieve all clothing items and their associated categories
+        $clothings = Clothing::all(); // Get all clothing items
+        $categories = Category::all(); // Get all categories
 
-    // Group clothing items by category_id
-    $groupedClothings = $clothings->groupBy('category_id'); // Group clothing items by category_id
+        // Group clothing items by category_id
+        $groupedClothings = $clothings->groupBy('category_id'); // Group clothing items by category_id
 
-    // Pass both categories and grouped clothing items to the view
-    return view('clothing.index', compact('groupedClothings', 'categories'));
-}
+        // Pass both categories and grouped clothing items to the view
+        return view('clothing.index', compact('groupedClothings', 'categories'));
+    }
 
-    
-    
     // Show the form for creating a new clothing item
     public function create()
     {
@@ -33,32 +31,43 @@ class ClothingController extends Controller
 
     // Store a new clothing item
     public function store(Request $request)
-{
-    // Validate incoming request
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'color' => 'required|string|max:255',
-        'category_id' => 'required|exists:categories,id',
-        'image' => 'required|image|max:10240', // Validate the image file
-    ]);
+    {
+        // Validate the request
+        $validated = $request->validate([
+            'category_id' => 'required|exists:categories,id', 
+            'name' => 'required|string|max:255', 
+            'color' => 'required|string|max:255', 
+            'image' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048' // Allow JPG, JPEG, PNG, GIF with max size 2MB
+        ]);
 
-    // Store the image and get the file path
-    $imagePath = $request->file('image')->store('clothes', 'public');
+        // Handle the image upload
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $image = $request->file('image');
+            $imagePath = $image->store('clothes', 'public');
+        }
 
-    // Create a new clothing item and assign the authenticated user's ID
-    $clothing = Clothing::create([
-        'name' => $request->name,
-        'color' => $request->color,
-        'category_id' => $request->category_id,
-        'file_path' => $imagePath,
-        'user_id' => auth()->id(), // Automatically assign the user_id
-    ]);
+        // Check if a clothing item already exists in the selected category
+        $existingClothing = Clothing::where('category_id', $validated['category_id'])->first();
 
-    // Redirect the user with a success message
-    return redirect()->route('clothing.index')->with('success', 'Clothing added successfully!');
-}
+        if ($existingClothing) {
+            // If a clothing item exists for the category, update it (i.e., replace the image)
+            $existingClothing->update([
+                'name' => $validated['name'],
+                'color' => $validated['color'],
+                'file_path' => $imagePath ?? $existingClothing->file_path, // Retain previous image if new image isn't provided
+            ]);
+        } else {
+            // If no clothing exists, create a new one
+            Clothing::create([
+                'category_id' => $validated['category_id'],
+                'name' => $validated['name'],
+                'color' => $validated['color'],
+                'file_path' => $imagePath ?? null,
+            ]);
+        }
 
-    
+        return redirect()->route('clothing.index');
+    }
 
     // Show a specific clothing item
     public function show(Clothing $clothing)
@@ -108,5 +117,27 @@ class ClothingController extends Controller
         $clothing->delete();
 
         return redirect()->route('clothing.index')->with('success', 'Clothing item deleted successfully.');
+    }
+
+    // Revert the clothing item image to the previous image
+    public function revert(Request $request, Clothing $clothing)
+    {
+        // Check if there is a previous image available
+        $previousClothing = Clothing::where('category_id', $clothing->category_id)
+                                     ->whereNotNull('file_path')
+                                     ->where('id', '!=', $clothing->id)
+                                     ->latest()
+                                     ->first();
+
+        if ($previousClothing) {
+            // Update the current clothing to use the previous image
+            $clothing->update([
+                'file_path' => $previousClothing->file_path,  // Set the file path of the previous image
+            ]);
+
+            return redirect()->route('clothing.index')->with('success', 'Image reverted successfully.');
+        }
+
+        return redirect()->route('clothing.index')->with('error', 'No previous image found.');
     }
 }

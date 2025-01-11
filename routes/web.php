@@ -10,6 +10,8 @@ Route::resource('categories', CategoryController::class);
 
 Route::resource('clothing', ClothingController::class);
 
+Route::patch('/clothing/{clothing}/revert', [ClothingController::class, 'revert'])->name('clothing.revert');
+
 
 // Home route - Fetches clothing items and passes them to the view
 Route::get('/', [ClothingController::class, 'index'])
