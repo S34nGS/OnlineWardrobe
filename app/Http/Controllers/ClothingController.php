@@ -104,22 +104,21 @@ class ClothingController extends Controller
     // Revert the clothing item image to the previous image
     public function revert(Request $request, Clothing $clothing)
     {
-        // Check if there is a previous image available
-        $previousClothing = Clothing::where('category_id', $clothing->category_id)
-                                     ->whereNotNull('file_path')
-                                     ->where('id', '!=', $clothing->id)
-                                     ->latest()
-                                     ->first();
+        // Fetch the previous clothing item within the same category
+        $previousClothing = Clothing::where('category_id', $clothing->category_id) // same category
+                                    ->where('id', '<', $clothing->id) // previous item (lower id)
+                                    ->orderBy('id', 'desc') // Get the latest one
+                                    ->first();
 
         if ($previousClothing) {
-            // Update the current clothing to use the previous image
+            // Revert the current item to the previous item's image
             $clothing->update([
-                'file_path' => $previousClothing->file_path,  // Set the file path of the previous image
+                'file_path' => $previousClothing->file_path, // Set the file path of the previous item
             ]);
 
             return redirect()->route('clothing.index')->with('success', 'Image reverted successfully.');
         }
 
-        return redirect()->route('clothing.index')->with('error', 'No previous image found.');
+        return redirect()->route('clothing.index')->with('error', 'No previous item found in this category.');
     }
 }
