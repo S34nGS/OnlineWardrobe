@@ -5,21 +5,17 @@ namespace App\Http\Controllers;
 use App\Models\Clothing;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ClothingController extends Controller
 {
     // Show the index page with all clothing items
     public function index()
     {
-        // Retrieve all clothing items and their associated categories
-        $clothings = Clothing::all(); // Get all clothing items
-        $categories = Category::all(); // Get all categories
+        // Retrieve all categories with the count of their associated clothing items
+        $categories = Category::withCount('clothings')->get();
 
-        // Group clothing items by category_id
-        $groupedClothings = $clothings->groupBy('category_id'); // Group clothing items by category_id
-
-        // Pass both categories and grouped clothing items to the view
-        return view('clothing.index', compact('groupedClothings', 'categories'));
+        return view('clothing.index', compact('categories'));
     }
 
     // Show the form for creating a new clothing item
@@ -32,41 +28,27 @@ class ClothingController extends Controller
     // Store a new clothing item
     public function store(Request $request)
     {
-        // Validate the request
-        $validated = $request->validate([
-            'category_id' => 'required|exists:categories,id', 
-            'name' => 'required|string|max:255', 
-            'color' => 'required|string|max:255', 
-            'image' => 'required|image|mimes:jpg,jpeg,png,gif|max:2048' // Allow JPG, JPEG, PNG, GIF with max size 2MB
+        // Validate the incoming request
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'color' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
-        // Handle the image upload
-        if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            $image = $request->file('image');
-            $imagePath = $image->store('clothes', 'public');
-        }
+        // Store the image file and get its path
+        $imagePath = $request->file('image')->store('clothes', 'public');
 
-        // Check if a clothing item already exists in the selected category
-        $existingClothing = Clothing::where('category_id', $validated['category_id'])->first();
+        // Create a new clothing item
+        Clothing::create([
+            'name' => $request->name,
+            'color' => $request->color,
+            'category_id' => $request->category_id,
+            'user_id' => Auth::id(),  // Assign the authenticated user ID
+            'file_path' => $imagePath,
+        ]);
 
-        if ($existingClothing) {
-            // If a clothing item exists for the category, update it (i.e., replace the image)
-            $existingClothing->update([
-                'name' => $validated['name'],
-                'color' => $validated['color'],
-                'file_path' => $imagePath ?? $existingClothing->file_path, // Retain previous image if new image isn't provided
-            ]);
-        } else {
-            // If no clothing exists, create a new one
-            Clothing::create([
-                'category_id' => $validated['category_id'],
-                'name' => $validated['name'],
-                'color' => $validated['color'],
-                'file_path' => $imagePath ?? null,
-            ]);
-        }
-
-        return redirect()->route('clothing.index');
+        return redirect()->route('clothing.index')->with('success', 'Clothing item added successfully!');
     }
 
     // Show a specific clothing item
@@ -100,7 +82,7 @@ class ClothingController extends Controller
             'name' => $request->name,
             'color' => $request->color,
             'category_id' => $request->category_id,
-            'file_path' => $filePath, // Update the image file path
+            'file_path' => $filePath, // Update the image file path if new image exists
         ]);
 
         return redirect()->route('clothing.index')->with('success', 'Clothing item updated successfully.');
