@@ -1,48 +1,36 @@
-// resources/views/clothing/create.blade.php
-
 @extends('layouts.app')
 
 @section('content')
-    <div class="container mx-auto">
-        <h1 class="text-2xl font-semibold mb-6">Add New Clothing</h1>
+    <div class="container mx-auto mt-8">
+        <h2 class="text-2xl font-semibold mb-4">Add New Clothing</h2>
 
-        <!-- Make sure to add enctype="multipart/form-data" to the form for image uploads -->
         <form action="{{ route('clothing.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
-
-            <!-- Name Field -->
-            <div class="mb-4">
-                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
-                <input type="text" id="name" name="name" class="mt-1 block w-full border border-gray-300 rounded-md" required>
-            </div>
-
-            <!-- Color Field -->
-            <div class="mb-4">
-                <label for="color" class="block text-sm font-medium text-gray-700">Color</label>
-                <input type="text" id="color" name="color" class="mt-1 block w-full border border-gray-300 rounded-md" required>
-            </div>
-
-            <!-- Category Field -->
             <div class="mb-4">
                 <label for="category_id" class="block text-sm font-medium text-gray-700">Category</label>
-                <select id="category_id" name="category_id" class="mt-1 block w-full border border-gray-300 rounded-md" required>
-                    <option value="">Select a category</option>
-                    @foreach ($categories as $category)
+                <select name="category_id" id="category_id" class="w-full p-2 mt-2 border border-gray-300 rounded-md">
+                    @foreach($categories as $category)
                         <option value="{{ $category->id }}">{{ $category->name }}</option>
                     @endforeach
                 </select>
             </div>
 
-            <!-- Image Upload Field -->
             <div class="mb-4">
-                <label for="image" class="block text-sm font-medium text-gray-700">Upload Image</label>
-                <input type="file" id="image" name="image" class="mt-1 block w-full border border-gray-300 rounded-md" accept="image/*" required>
+                <label for="name" class="block text-sm font-medium text-gray-700">Name</label>
+                <input type="text" name="name" id="name" class="w-full p-2 mt-2 border border-gray-300 rounded-md" required>
             </div>
 
-            <!-- Submit Button -->
             <div class="mb-4">
-                <button type="submit" class="bg-blue-500 text-white py-2 px-4 rounded-md">Save Clothing</button>
+                <label for="color" class="block text-sm font-medium text-gray-700">Color</label>
+                <input type="text" name="color" id="color" class="w-full p-2 mt-2 border border-gray-300 rounded-md" required>
             </div>
+
+            <div class="mb-4">
+                <label for="image" class="block text-sm font-medium text-gray-700">Image</label>
+                <input type="file" name="image" id="image" class="w-full p-2 mt-2 border border-gray-300 rounded-md" required>
+            </div>
+
+            <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-md">Add Clothing</button>
         </form>
     </div>
 @endsection

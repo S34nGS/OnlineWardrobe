@@ -13,27 +13,41 @@
 
     <!-- Vite (CSS & JS) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Smooth Scroll -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            let scrollLinks = document.querySelectorAll("a[href^='#']");
+            for (let link of scrollLinks) {
+                link.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    let targetId = link.getAttribute("href").substring(1);
+                    let targetElement = document.getElementById(targetId);
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                });
+            }
+        });
+    </script>
 </head>
-<body class="font-sans antialiased bg-gray-100 dark:bg-gray-900">
+
+<body class="font-sans text-gray-900 bg-white">
 
     <!-- Main container -->
-    <div class="min-h-screen">
-        
-        <!-- Navigation bar -->
+    <div class="flex flex-col min-h-screen bg-gray-50">
+
+        <!-- Navigation Bar -->
         @include('layouts.navigation')
 
-        <!-- Page Heading (optional) -->
-        @isset($header)
-        <header class="bg-white dark:bg-gray-800 shadow">
-            <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                {{ $header }}
+        <!-- Main Content Area -->
+        <main class="flex-grow">
+            <div class="bg-white shadow-md py-8">
+                <div class="container mx-auto px-6 lg:px-8">
+                    @yield('content')
+                </div>
             </div>
-        </header>
-        @endisset
-
-        <!-- Page Content -->
-        <main>
-            @yield('content')  <!-- This will display content from @section('content') -->
         </main>
 
     </div>

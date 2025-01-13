@@ -5,22 +5,19 @@ namespace App\Http\Controllers;
 use App\Models\Clothing;
 use App\Models\Category;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 
 class ClothingController extends Controller
 {
+    // Show the index page with all clothing items
     public function index()
     {
-        $clothings = Clothing::all(); // Alle kleding ophalen
-        $categories = Category::all(); // Alle categorieën ophalen
-        
-        // Groepeer de kledingitems per categorie
-        $groupedClothings = $clothings->groupBy('category_id');
-    
-        return view('clothing.index', compact('groupedClothings', 'categories'));
+        // Retrieve all categories with the count of their associated clothing items
+        $categories = Category::withCount('clothings')->get();
+
+        return view('clothing.index', compact('categories'));
     }
-    
-    
+
     // Show the form for creating a new clothing item
     public function create()
     {
@@ -30,32 +27,29 @@ class ClothingController extends Controller
 
     // Store a new clothing item
     public function store(Request $request)
-{
-    // Validate incoming request
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'color' => 'required|string|max:255',
-        'category_id' => 'required|exists:categories,id',
-        'image' => 'required|image|max:10240', // Validate the image file
-    ]);
+    {
+        // Validate the incoming request
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'color' => 'required|string|max:255',
+            'category_id' => 'required|exists:categories,id',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+        ]);
 
-    // Store the image and get the file path
-    $imagePath = $request->file('image')->store('clothes', 'public');
+        // Store the image file and get its path
+        $imagePath = $request->file('image')->store('clothes', 'public');
 
-    // Create a new clothing item and assign the authenticated user's ID
-    $clothing = Clothing::create([
-        'name' => $request->name,
-        'color' => $request->color,
-        'category_id' => $request->category_id,
-        'file_path' => $imagePath,
-        'user_id' => auth()->id(), // Automatically assign the user_id
-    ]);
+        // Create a new clothing item
+        Clothing::create([
+            'name' => $request->name,
+            'color' => $request->color,
+            'category_id' => $request->category_id,
+            'user_id' => Auth::id(),  // Assign the authenticated user ID
+            'file_path' => $imagePath,
+        ]);
 
-    // Redirect the user with a success message
-    return redirect()->route('clothing.index')->with('success', 'Clothing added successfully!');
-}
-
-    
+        return redirect()->route('clothing.index')->with('success', 'Clothing item added successfully!');
+    }
 
     // Show a specific clothing item
     public function show(Clothing $clothing)
@@ -88,7 +82,7 @@ class ClothingController extends Controller
             'name' => $request->name,
             'color' => $request->color,
             'category_id' => $request->category_id,
-            'file_path' => $filePath, // Update the image file path
+            'file_path' => $filePath, // Update the image file path if new image exists
         ]);
 
         return redirect()->route('clothing.index')->with('success', 'Clothing item updated successfully.');
@@ -105,5 +99,26 @@ class ClothingController extends Controller
         $clothing->delete();
 
         return redirect()->route('clothing.index')->with('success', 'Clothing item deleted successfully.');
+    }
+
+    // Revert the clothing item image to the previous image
+    public function revert(Request $request, Clothing $clothing)
+    {
+        // Fetch the previous clothing item within the same category
+        $previousClothing = Clothing::where('category_id', $clothing->category_id) // same category
+                                    ->where('id', '<', $clothing->id) // previous item (lower id)
+                                    ->orderBy('id', 'desc') // Get the latest one
+                                    ->first();
+
+        if ($previousClothing) {
+            // Revert the current item to the previous item's image
+            $clothing->update([
+                'file_path' => $previousClothing->file_path, // Set the file path of the previous item
+            ]);
+
+            return redirect()->route('clothing.index')->with('success', 'Image reverted successfully.');
+        }
+
+        return redirect()->route('clothing.index')->with('error', 'No previous item found in this category.');
     }
 }

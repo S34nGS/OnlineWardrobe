@@ -11,8 +11,9 @@ class Category extends Model
 
     protected $fillable = ['name'];
 
-    public function clothing()
-    {
-        return $this->hasMany(Clothing::class);
-    }
+    public function clothings()
+{
+    return $this->hasMany(Clothing::class);
+}
+
 }
