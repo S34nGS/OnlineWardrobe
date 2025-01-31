@@ -15,7 +15,7 @@
                     <select class="border p-2 rounded mb-4 clothing-dropdown" data-category-id="{{ $category->id }}" 
                             onchange="changeClothing(this, '{{ $category->id }}')">
                         @foreach ($category->clothings as $clothing)
-                            <option value="{{ $clothing->id }}" data-img="{{ asset('storage/' . $clothing->file_path) }}" 
+                            <option value="{{ $clothing->id }}" data-img="{{ asset($clothing->file_path) }}" 
                                     data-name="{{ $clothing->name }}" data-color="{{ $clothing->color }}">
                                 {{ $clothing->name }} - {{ $clothing->color }}
                             </option>
@@ -26,7 +26,7 @@
                     <div class="bg-gray-100 p-4 rounded-lg shadow-md text-center w-3/4 mb-6" id="clothing-display-{{ $category->id }}">
                         @if ($category->clothings->count() > 0)
                             @php $firstClothing = $category->clothings->first(); @endphp
-                            <img src="{{ asset('storage/' . $firstClothing->file_path) }}" class="w-48 h-auto mx-auto rounded-lg clothing-img">
+                            <img src="{{ asset($firstClothing->file_path) }}" class="w-48 h-auto mx-auto rounded-lg clothing-img">
                             <p class="mt-3 text-lg font-medium clothing-text">{{ $firstClothing->name }} - {{ $firstClothing->color }}</p>
                         @else
                             <p class="text-gray-500">No clothing available</p>

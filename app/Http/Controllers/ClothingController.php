@@ -25,32 +25,33 @@ class ClothingController extends Controller
 
     // Store new clothing
     public function store(Request $request)
-    {
-        // Validate the incoming request
-        $request->validate([
-            'category_id' => 'required|exists:categories,id',
-            'name' => 'required|string|max:255',
-            'color' => 'required|string|max:50',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-        ]);
-    
-        // Handle the file upload and store the image path in the public directory
-        if ($request->hasFile('image')) {
-            $filePath = $request->file('image')->move(public_path('clothing_images'), $request->file('image')->getClientOriginalName());
-        }
-    
-        // Create the new clothing item and associate it with the logged-in user and category
-        Clothing::create([
-            'name' => $request->name,
-            'color' => $request->color,
-            'category_id' => $request->category_id,
-            'file_path' => 'clothing_images/' . $request->file('image')->getClientOriginalName(), // Store the image path in the database
-            'user_id' => Auth::id(), // Associate clothing with the authenticated user
-        ]);
-    
-        // Redirect the user back to the clothing index page with success message
-        return redirect()->route('clothing.index')->with('success', 'Clothing added successfully!');
+{
+    // Validate the incoming request
+    $request->validate([
+        'category_id' => 'required|exists:categories,id',
+        'name' => 'required|string|max:255',
+        'color' => 'required|string|max:50',
+        'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+    ]);
+
+    // Handle the file upload and store the image path in the public directory
+    if ($request->hasFile('image')) {
+        $fileName = $request->file('image')->getClientOriginalName();
+        $filePath = $request->file('image')->move(public_path('clothing_images'), $fileName);
     }
+
+    // Create the new clothing item and associate it with the logged-in user and category
+    Clothing::create([
+        'name' => $request->name,
+        'color' => $request->color,
+        'category_id' => $request->category_id,
+        'file_path' => 'clothing_images/' . $fileName, // Store the image path in the database
+        'user_id' => Auth::id(), // Associate clothing with the authenticated user
+    ]);
+
+    // Redirect the user back to the clothing index page with success message
+    return redirect()->route('clothing.index')->with('success', 'Clothing added successfully!');
+}
 
     // Show the form to edit a specific clothing item
     public function edit(Clothing $clothing)
