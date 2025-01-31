@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClothingController;
+use App\Http\Controllers\FavoritesController;
 use App\Http\Controllers\OutfitController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WardrobeController;
@@ -43,10 +44,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/wardrobe', [WardrobeController::class, 'index'])->name('wardrobe.index');
 });
 
-// Route for Favorites page
-Route::get('/favorites', function () {
-    return view('favorites');
-})->middleware('auth')->name('favorites');
+Route::middleware('auth')->group(function () {
+    Route::get('/favorites', [FavoritesController::class, 'index'])->name('favorites.index');
+});
 
 // API Route for fetching updated clothing list dynamically
 Route::get('/api/clothing/{categoryId}', [ClothingController::class, 'getClothingByCategory']);

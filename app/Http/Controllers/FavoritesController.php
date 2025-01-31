@@ -2,18 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\Outfit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class OutfitController extends Controller
+class FavoritesController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $outfits = Outfit::where('user_id', Auth::id())->with('clothings')->get();
+        return view('favorites.index', compact('outfits'));
     }
 
     /**
@@ -29,19 +31,7 @@ class OutfitController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'clothing_ids' => 'required|json',
-        ]);
-
-        $clothingIds = json_decode($request->input('clothing_ids'), true);
-
-        $outfit = Outfit::create([
-            'user_id' => Auth::id(),
-            'name' => $request->input('name', null),
-            'clothing_ids' => $clothingIds,
-        ]);
-
-        return redirect()->route('clothing.index')->with('success', 'Outfit saved successfully!');
+        //
     }
 
     /**

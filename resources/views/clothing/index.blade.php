@@ -59,8 +59,8 @@
             <button class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded" onclick="randomizeOutfits()">Randomize Outfits</button>
             <form action="{{ route('outfits.store') }}" method="POST">
                 @csrf
-                <input type="hidden" name="clothing_ids[]" id="clothing-ids">
-                <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded">Save</button>
+                <input type="hidden" name="clothing_ids" id="clothing-ids">
+                <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded w-full">Save to favorites</button>
             </form>
         </div>
     </div>
@@ -133,9 +133,10 @@
 
     // Function to save outfit
     function saveOutfit() {
-        const clothingIds = [];
+        const clothingIds = {};
         document.querySelectorAll(".clothing-dropdown").forEach(dropdown => {
-            clothingIds.push(dropdown.value);
+            const categoryId = dropdown.getAttribute("data-category-id");
+            clothingIds[categoryId] = dropdown.value;
         });
         document.getElementById('clothing-ids').value = JSON.stringify(clothingIds);
     }
