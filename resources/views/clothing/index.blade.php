@@ -56,7 +56,7 @@
         <!-- Sidebar with buttons -->
         <div class="flex flex-col gap-6 w-full sm:w-1/5 lg:w-1/5 mt-10 sm:mt-0">
             <a href="{{ route('clothing.create') }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded text-center">Upload New Clothing</a>
-            <button class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded">Randomize Outfits</button>
+            <button class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded" onclick="randomizeOutfits()">Randomize Outfits</button>
             <button class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded">Save</button>
         </div>
     </div>
@@ -89,7 +89,42 @@
         });
     }
 
-    // Auto-refresh every 5 seconds
-    setInterval(updateDropdowns, 5000);
+    // Function to change clothing display
+    function changeClothing(select, categoryId) {
+        const selectedOption = select.options[select.selectedIndex];
+        const clothingImage = selectedOption.getAttribute("data-img");
+        const clothingName = selectedOption.getAttribute("data-name");
+        const clothingColor = selectedOption.getAttribute("data-color");
+        const clothingId = selectedOption.value;
+
+        // Update the image
+        const imageElement = document.querySelector(`#clothing-display-${categoryId} .clothing-img`);
+        imageElement.src = clothingImage;
+
+        // Update the text
+        const textElement = document.querySelector(`#clothing-display-${categoryId} .clothing-text`);
+        textElement.textContent = `${clothingName} - ${clothingColor}`;
+
+        // Update the edit button link
+        const editButton = document.querySelector(`#clothing-display-${categoryId} .edit-button`);
+        editButton.href = `/clothing/${clothingId}/edit`;
+
+        // Update the delete form action
+        const deleteForm = document.querySelector(`#clothing-display-${categoryId} .delete-form`);
+        deleteForm.action = `/clothing/${clothingId}`;
+    }
+
+    // Function to randomize outfits
+    function randomizeOutfits() {
+        document.querySelectorAll(".clothing-dropdown").forEach(dropdown => {
+            const options = dropdown.options;
+            if (options.length > 0) {
+                const randomIndex = Math.floor(Math.random() * options.length);
+                dropdown.selectedIndex = randomIndex;
+                const categoryId = dropdown.getAttribute("data-category-id");
+                changeClothing(dropdown, categoryId);
+            }
+        });
+    }
 </script>
 @endsection

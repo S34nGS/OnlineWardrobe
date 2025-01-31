@@ -32,32 +32,6 @@
             }
         });
     </script>
-
-    <script>
-        function changeClothing(select, categoryId) {
-            const selectedOption = select.options[select.selectedIndex];
-            const clothingImage = selectedOption.getAttribute("data-img");
-            const clothingName = selectedOption.getAttribute("data-name");
-            const clothingColor = selectedOption.getAttribute("data-color");
-            const clothingId = selectedOption.value;
-
-            // Update the image
-            const imageElement = document.querySelector(`#clothing-display-${categoryId} .clothing-img`);
-            imageElement.src = clothingImage;
-
-            // Update the text
-            const textElement = document.querySelector(`#clothing-display-${categoryId} .clothing-text`);
-            textElement.textContent = `${clothingName} - ${clothingColor}`;
-
-            // Update the edit button link
-            const editButton = document.querySelector(`#clothing-display-${categoryId} .edit-button`);
-            editButton.href = `/clothing/${clothingId}/edit`;
-
-            // Update the delete form action
-            const deleteForm = document.querySelector(`#clothing-display-${categoryId} .delete-form`);
-            deleteForm.action = `/clothing/${clothingId}`;
-        }
-    </script>
 </head>
 
 <body class="font-sans text-gray-900 bg-white">
