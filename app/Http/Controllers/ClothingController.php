@@ -2,34 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
 use App\Models\Clothing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class ClothingController extends Controller
 {
-    public function index()
-{
-    // Fetching all clothing items
-    $clothingItems = Clothing::all();
-
-    // Define the categories variable (example: fetching categories from a Category model)
-    $categories = Category::all();
-
-    // Pass both clothing items and categories to the view
-    return view('clothing.index', compact('clothingItems', 'categories'));
-}
-
-public function edit($id)
-{
-    // Fetch the clothing item by its ID
-    $clothingItem = Clothing::findOrFail($id);
-
-    // Pass the clothing item to the view
-    return view('clothing.edit', compact('clothingItem'));
-}
-
     // Kledingkast: Alle kleding van de ingelogde gebruiker
     public function wardrobe()
     {
