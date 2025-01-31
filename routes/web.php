@@ -7,6 +7,9 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WardrobeController;
 use Illuminate\Support\Facades\Route;
 
+Route::get('/wardrobe', [WardrobeController::class, 'index'])->name('wardrobe.index');
+Route::post('/wardrobe', [WardrobeController::class, 'store'])->name('clothing.store');
+
 Route::resource('categories', CategoryController::class);
 Route::resource('clothing', ClothingController::class);
 
