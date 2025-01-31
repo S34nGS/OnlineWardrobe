@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClothingController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\WardrobeController;
 use Illuminate\Support\Facades\Route;
 
 Route::resource('categories', CategoryController::class);
@@ -32,6 +33,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/clothes/{clothing}/edit', [ClothingController::class, 'edit'])->name('clothing.edit');
     Route::put('/clothes/{clothing}', [ClothingController::class, 'update'])->name('clothing.update');
     Route::delete('/clothes/{clothing}', [ClothingController::class, 'destroy'])->name('clothing.destroy');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/wardrobe', [WardrobeController::class, 'index'])->name('wardrobe.index');
 });
 
 // Route for Favorites page

@@ -50,7 +50,7 @@
                 <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                     {{ __('Homepage') }}
                 </x-nav-link>
-                <x-nav-link :href="route('clothing.index')" :active="request()->routeIs('clothing.index')">
+                <x-nav-link :href="route('wardrobe.index')" :active="request()->routeIs('wardrobe.index')">
                     {{ __('Kledingkast') }}
                 </x-nav-link>
                 <x-nav-link :href="route('favorites')" :active="request()->routeIs('favorites')">
@@ -76,7 +76,7 @@
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
                 {{ __('Homepage') }}
             </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('clothing.index')" :active="request()->routeIs('clothing.index')">
+            <x-responsive-nav-link :href="route('wardrobe.index')" :active="request()->routeIs('wardrobe.index')">
                 {{ __('Kledingkast') }}
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('favorites')" :active="request()->routeIs('favorites')">
