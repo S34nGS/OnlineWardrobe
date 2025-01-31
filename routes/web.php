@@ -5,10 +5,13 @@ use App\Http\Controllers\ClothingController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
+// Resource routes for categories (CRUD operations)
 Route::resource('categories', CategoryController::class);
+
+// Resource routes for clothing (CRUD operations)
 Route::resource('clothing', ClothingController::class);
 
-// Route for Revert action (patch)
+// Route for Revert action (custom patch route for clothing)
 Route::patch('/clothing/{clothing}/revert', [ClothingController::class, 'revert'])->name('clothing.revert');
 
 // Home route - Fetches clothing items and passes them to the view

@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Clothing;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class ClothingController extends Controller
 {
@@ -50,5 +51,21 @@ class ClothingController extends Controller
         return redirect()->route('clothing.index')->with('success', 'Clothing added successfully!');
     }
 
-    // Additional methods like edit, destroy can go here...
+    // Destroy a clothing item
+    public function destroy($id)
+    {
+        // Find the clothing item by ID
+        $clothing = Clothing::findOrFail($id);
+
+        // Delete the associated file from storage
+        if (Storage::exists($clothing->file_path)) {
+            Storage::delete($clothing->file_path);
+        }
+
+        // Delete the clothing item from the database
+        $clothing->delete();
+
+        // Redirect back with a success message
+        return redirect()->route('clothing.index')->with('success', 'Clothing item deleted successfully.');
+    }
 }
