@@ -8,15 +8,15 @@ class Outfit extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'user_id'];
+    protected $fillable = ['user_id', 'name'];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function clothing()
+    public function clothings()
     {
-        return $this->belongsToMany(Clothing::class, 'outfit_details');
+        return $this->belongsToMany(Clothing::class, 'clothing_outfit');
     }
 }

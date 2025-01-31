@@ -57,7 +57,11 @@
         <div class="flex flex-col gap-6 w-full sm:w-1/5 lg:w-1/5 mt-10 sm:mt-0">
             <a href="{{ route('clothing.create') }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded text-center">Upload New Clothing</a>
             <button class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded" onclick="randomizeOutfits()">Randomize Outfits</button>
-            <button class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded">Save</button>
+            <form action="{{ route('outfits.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="clothing_ids[]" id="clothing-ids">
+                <button type="submit" class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded">Save</button>
+            </form>
         </div>
     </div>
 </div>
@@ -126,5 +130,16 @@
             }
         });
     }
+
+    // Function to save outfit
+    function saveOutfit() {
+        const clothingIds = [];
+        document.querySelectorAll(".clothing-dropdown").forEach(dropdown => {
+            clothingIds.push(dropdown.value);
+        });
+        document.getElementById('clothing-ids').value = JSON.stringify(clothingIds);
+    }
+
+    document.querySelector('form[action="{{ route('outfits.store') }}"]').addEventListener('submit', saveOutfit);
 </script>
 @endsection

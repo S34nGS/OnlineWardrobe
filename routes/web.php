@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClothingController;
+use App\Http\Controllers\OutfitController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\WardrobeController;
 use Illuminate\Support\Facades\Route;
@@ -46,5 +47,7 @@ Route::get('/favorites', function () {
 
 // API Route for fetching updated clothing list dynamically
 Route::get('/api/clothing/{categoryId}', [ClothingController::class, 'getClothingByCategory']);
+
+Route::post('/outfits', [OutfitController::class, 'store'])->name('outfits.store');
 
 require __DIR__.'/auth.php';
