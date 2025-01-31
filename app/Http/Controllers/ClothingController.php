@@ -96,22 +96,5 @@ class ClothingController extends Controller
         return redirect()->route('clothing.index')->with('success', 'Clothing deleted successfully!');
     }
 
-    // Kledingkast pagina
-    public function wardrobe()
-    {
-        // Haal de kledingitems van de gebruiker op, bijvoorbeeld:
-        $clothingItems = Clothing::where('user_id', auth()->id())->get();
-        return view('clothing.wardrobe', compact('clothingItems'));
-    }
-
-    // Favorieten pagina (kan op basis van gebruikers voorkeuren)
-    public function favorites()
-    {
-        // Hier kun je favorieten ophalen, bijvoorbeeld:
-        // Als je een 'favorites' relatie hebt in je user model
-        $favoriteItems = auth()->user()->favorites; // Zorg ervoor dat je relatie hebt
-        return view('clothing.favorites', compact('favoriteItems'));
-    }
-    
     // Additional methods like revert can go here...
 }

@@ -46,7 +46,7 @@ class User extends Authenticatable
     }
 
     /**
-     * Relationship with the Clothing model (one-to-many).
+     * Relationship with the Clothing model.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
@@ -55,18 +55,13 @@ class User extends Authenticatable
         return $this->hasMany(Clothing::class);
     }
 
-    /**
-     * Many-to-many relationship with the Clothing model for favorites.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     */
-    public function favorites()
+    public function clothes()
     {
-        return $this->belongsToMany(Clothing::class, 'favorite_clothing');
+        return $this->belongsToMany(Clothing::class, 'user_clothing'); // Pivot table: 'user_clothing'
     }
     
     /**
-     * Relationship with the Outfit model (one-to-many).
+     * Relationship with the Outfit model.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
