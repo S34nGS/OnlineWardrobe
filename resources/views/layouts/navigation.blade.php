@@ -15,6 +15,15 @@
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                         {{ __('Home') }}
                     </x-nav-link>
+                    
+                    <!-- Voeg Kledingkast en Favorieten toe -->
+                    <x-nav-link :href="route('clothing.wardrobe')" :active="request()->routeIs('clothing.wardrobe')">
+                        {{ __('Kledingkast') }}
+                    </x-nav-link>
+
+                    <x-nav-link :href="route('clothing.favorites')" :active="request()->routeIs('clothing.favorites')">
+                        {{ __('Favorieten') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -69,6 +78,13 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
                 {{ __('Home') }}
+            </x-responsive-nav-link>
+            <!-- Voeg Kledingkast en Favorieten toe voor mobiel -->
+            <x-responsive-nav-link :href="route('clothing.wardrobe')" :active="request()->routeIs('clothing.wardrobe')">
+                {{ __('Kledingkast') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('clothing.favorites')" :active="request()->routeIs('clothing.favorites')">
+                {{ __('Favorieten') }}
             </x-responsive-nav-link>
         </div>
 

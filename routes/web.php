@@ -8,6 +8,15 @@ use Illuminate\Support\Facades\Route;
 Route::resource('categories', CategoryController::class);
 Route::resource('clothing', ClothingController::class);
 
+// Routes voor de kledingkast en favorieten pagina
+Route::middleware('auth')->group(function () {
+    // Kledingkast pagina
+    Route::get('/clothing/wardrobe', [ClothingController::class, 'wardrobe'])->name('clothing.wardrobe');
+    
+    // Favorieten pagina (je kunt zelf de logica bepalen voor favorieten)
+    Route::get('/clothing/favorites', [ClothingController::class, 'favorites'])->name('clothing.favorites');
+});
+
 // Route for Revert action (patch)
 Route::patch('/clothing/{clothing}/revert', [ClothingController::class, 'revert'])->name('clothing.revert');
 
