@@ -34,6 +34,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/clothes/{clothing}', [ClothingController::class, 'destroy'])->name('clothing.destroy');
 });
 
+// Route for Favorites page
+Route::get('/favorites', function () {
+    return view('favorites');
+})->middleware('auth')->name('favorites');
+
 // API Route for fetching updated clothing list dynamically
 Route::get('/api/clothing/{categoryId}', [ClothingController::class, 'getClothingByCategory']);
 
