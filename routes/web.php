@@ -8,6 +8,9 @@ use Illuminate\Support\Facades\Route;
 Route::resource('categories', CategoryController::class);
 Route::resource('clothing', ClothingController::class);
 
+Route::get('/clothing', [ClothingController::class, 'index']);
+Route::get('/clothing/{id}/edit', [ClothingController::class, 'edit'])->name('clothing.edit');
+
 // Routes voor de kledingkast en favorieten pagina
 Route::middleware('auth')->group(function () {
     // Kledingkast pagina
