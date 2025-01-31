@@ -6,7 +6,6 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::resource('categories', CategoryController::class);
-
 Route::resource('clothing', ClothingController::class);
 
 // Route for Revert action (patch)
@@ -34,5 +33,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/clothes/{clothing}', [ClothingController::class, 'update'])->name('clothing.update');
     Route::delete('/clothes/{clothing}', [ClothingController::class, 'destroy'])->name('clothing.destroy');
 });
+
+// API Route for fetching updated clothing list dynamically
+Route::get('/api/clothing/{categoryId}', [ClothingController::class, 'getClothingByCategory']);
 
 require __DIR__.'/auth.php';

@@ -6,6 +6,7 @@
 
         <form action="{{ route('clothing.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
+
             <div class="mb-4">
                 <label for="category_id" class="block text-sm font-medium text-gray-700">Category</label>
                 <select name="category_id" id="category_id" class="w-full p-2 mt-2 border border-gray-300 rounded-md">

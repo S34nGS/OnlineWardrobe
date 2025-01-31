@@ -1,71 +1,105 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="min-h-screen bg-gray-100 flex items-center justify-center py-8">
+<div class="container mx-auto flex justify-center gap-10 mt-10">
+    <!-- Clothing items in the center -->
+    <div class="flex flex-col items-center w-3/5">
+        @foreach ($categories as $category)
+            <div class="w-full text-center mb-10">
+                <h3 class="text-xl font-semibold mb-4">{{ $category->name }}</h3>
 
-        <!-- Main Container for Clothing Sections and Buttons -->
-        <div class="container mx-auto flex space-x-8">
+                <!-- Clothing Selection Dropdown -->
+                <select class="border p-2 rounded mb-4 clothing-dropdown" data-category-id="{{ $category->id }}" 
+                        onchange="changeClothing(this, '{{ $category->id }}')">
+                    @foreach ($category->clothings as $clothing)
+                        <option value="{{ $clothing->id }}" data-img="{{ asset('storage/' . $clothing->file_path) }}" 
+                                data-name="{{ $clothing->name }}" data-color="{{ $clothing->color }}">
+                            {{ $clothing->name }} - {{ $clothing->color }}
+                        </option>
+                    @endforeach
+                </select>
 
-            <!-- Clothing Categories Section (Vertically Centered) -->
-            <div class="flex flex-col space-y-12 w-full lg:w-3/4">
+                <!-- Displayed Clothing Item -->
+                <div class="bg-gray-100 p-4 rounded-lg shadow-md text-center w-3/4 mb-6" id="clothing-display-{{ $category->id }}">
+                    @if ($category->clothings->count() > 0)
+                        @php $firstClothing = $category->clothings->first(); @endphp
+                        <img src="{{ asset('storage/' . $firstClothing->file_path) }}" class="w-48 h-auto mx-auto rounded-lg clothing-img">
+                        <p class="mt-3 text-lg font-medium clothing-text">{{ $firstClothing->name }} - {{ $firstClothing->color }}</p>
+                    @else
+                        <p class="text-gray-500">No clothing available</p>
+                    @endif
+                </div>
 
-                <!-- Loop through all categories -->
-                @foreach ($categories as $category)
-                    <!-- Category Section -->
-                    <div class="bg-white p-6 rounded-lg shadow-lg relative">
-                        <h2 class="text-2xl font-semibold mb-4 text-center">{{ $category->name }}</h2>
+                <!-- Action Buttons -->
+                <div class="mt-4 flex flex-col gap-2">
+                    <form action="{{ route('clothing.revert', $firstClothing ?? '') }}" method="POST">
+                        @csrf
+                        @method('PATCH')
+                        <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded">Revert</button>
+                    </form>
 
-                        <!-- Get the most recent clothing item for this category -->
-                        @php
-                            $clothing = \App\Models\Clothing::where('category_id', $category->id)->latest()->first();
-                        @endphp
+                    <a href="{{ route('clothing.edit', $firstClothing ?? '') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Edit</a>
 
-                        @if ($clothing)
-                            <div class="flex flex-wrap justify-center gap-4">
-                                <!-- Display the most recent clothing item for the category -->
-                                <div class="border p-4 rounded-lg shadow-sm hover:shadow-md flex flex-col items-center">
-                                    <img src="{{ asset('storage/' . $clothing->file_path) }}" alt="{{ $clothing->name }}" class="w-36 h-36 object-cover mx-auto rounded-lg shadow-md transition-transform transform hover:scale-105 duration-300 ease-in-out">
-                                    <p class="text-center text-lg font-semibold text-gray-800">
-                                        {{ $clothing->name }}
-                                        <span class="text-sm text-gray-500">({{ $clothing->color }})</span>
-                                    </p>
-                                </div>
-                            </div>
-
-                            <!-- Revert Button for Previous Image (Positioned in the Top Left) -->
-                            @if ($clothing->file_path)
-                                <form action="{{ route('clothing.revert', $clothing->id) }}" method="POST" class="absolute top-4 left-4">
-                                    @csrf
-                                    @method('PATCH')
-                                    <button type="submit" class="bg-yellow-500 text-white py-2 px-4 rounded-md transition duration-300 ease-in-out hover:bg-yellow-600">
-                                        Revert to Previous Image
-                                    </button>
-                                </form>
-                            @endif
-                        @else
-                            <p class="text-center text-gray-500">No clothing available in this category.</p>
-                        @endif
-                    </div>
-                @endforeach
-
+                    <form action="{{ route('clothing.destroy', $firstClothing ?? '') }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">Delete</button>
+                    </form>
+                </div>
             </div>
-
-            <!-- Right Side: Buttons (Randomize and Save) -->
-            <div class="flex flex-col items-center space-y-6 w-1/4 px-4">
-                <button class="bg-blue-600 text-white py-3 px-6 rounded-md shadow-md hover:bg-blue-700 w-full transition duration-300 ease-in-out">
-                    Randomize
-                </button>
-                <button class="bg-green-600 text-white py-3 px-6 rounded-md shadow-md hover:bg-green-700 w-full transition duration-300 ease-in-out">
-                    Save
-                </button>
-
-                <!-- Add New Clothing Button -->
-                <a href="{{ route('clothing.create') }}" class="bg-blue-500 text-white py-3 px-6 rounded-md shadow-md hover:bg-blue-600 w-full text-center flex justify-center items-center">
-                    Add New Clothing
-                </a>
-            </div>
-
-        </div>
-
+        @endforeach
     </div>
+
+    <!-- Sidebar with buttons -->
+    <div class="flex flex-col gap-6 w-1/5">
+        <a href="{{ route('clothing.create') }}" class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded text-center">Upload New Clothing</a>
+        <button class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-6 rounded">Randomize Outfits</button>
+        <button class="bg-blue-700 hover:bg-blue-800 text-white font-bold py-3 px-6 rounded">Save</button>
+    </div>
+</div>
+
+<script>
+    function changeClothing(select, categoryId) {
+        const selectedOption = select.options[select.selectedIndex];
+        const clothingImage = selectedOption.getAttribute("data-img");
+        const clothingName = selectedOption.getAttribute("data-name");
+        const clothingColor = selectedOption.getAttribute("data-color");
+
+        // Update the displayed clothing item
+        const clothingDisplay = document.getElementById(`clothing-display-${categoryId}`);
+        clothingDisplay.innerHTML = `
+            <img src="${clothingImage}" class="w-48 h-auto mx-auto rounded-lg clothing-img">
+            <p class="mt-3 text-lg font-medium clothing-text">${clothingName} - ${clothingColor}</p>
+        `;
+    }
+
+    // Function to fetch updated clothing list for each category
+    function updateDropdowns() {
+        document.querySelectorAll(".clothing-dropdown").forEach(dropdown => {
+            const categoryId = dropdown.getAttribute("data-category-id");
+
+            fetch(`/api/clothing/${categoryId}`)
+                .then(response => response.json())
+                .then(data => {
+                    dropdown.innerHTML = "";
+                    data.forEach(clothing => {
+                        const option = document.createElement("option");
+                        option.value = clothing.id;
+                        option.setAttribute("data-img", clothing.image);
+                        option.setAttribute("data-name", clothing.name);
+                        option.setAttribute("data-color", clothing.color);
+                        option.textContent = `${clothing.name} - ${clothing.color}`;
+                        dropdown.appendChild(option);
+                    });
+
+                    // Automatically update the displayed clothing item
+                    changeClothing(dropdown, categoryId);
+                })
+                .catch(error => console.error("Error updating dropdown:", error));
+        });
+    }
+
+    // Auto-refresh every 5 seconds
+    setInterval(updateDropdowns, 5000);
+</script>
 @endsection
