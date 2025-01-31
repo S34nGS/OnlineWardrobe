@@ -46,6 +46,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/favorites', [FavoritesController::class, 'index'])->name('favorites.index');
+    Route::delete('/outfits/{outfit}', [FavoritesController::class, 'destroy'])->name('outfits.destroy');
 });
 
 // API Route for fetching updated clothing list dynamically

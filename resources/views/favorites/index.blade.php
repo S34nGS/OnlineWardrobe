@@ -28,6 +28,11 @@
                                 @endif
                             @endforeach
                         </div>
+                        <form action="{{ route('outfits.destroy', $outfit->id) }}" method="POST" class="mt-4">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">Delete Outfit</button>
+                        </form>
                     </div>
                 </div>
             @endforeach

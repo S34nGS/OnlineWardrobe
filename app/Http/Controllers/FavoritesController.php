@@ -61,8 +61,16 @@ class FavoritesController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Outfit $outfit)
     {
-        //
+        // Ensure the outfit belongs to the authenticated user
+        if ($outfit->user_id !== Auth::id()) {
+            return redirect()->route('favorites.index')->with('error', 'You are not authorized to delete this outfit.');
+        }
+
+        // Delete the outfit
+        $outfit->delete();
+
+        return redirect()->route('favorites.index')->with('success', 'Outfit deleted successfully.');
     }
 }
