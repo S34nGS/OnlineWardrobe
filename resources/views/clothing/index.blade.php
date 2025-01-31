@@ -23,26 +23,30 @@
                     </select>
 
                     <!-- Displayed Clothing Item -->
-                    <div class="bg-gray-100 p-4 rounded-lg shadow-md text-center w-3/4 mb-6" id="clothing-display-{{ $category->id }}">
+                    <div class="bg-gray-100 p-4 rounded-lg shadow-md text-center w-3/4 mb-6 flex items-center" id="clothing-display-{{ $category->id }}">
                         @if ($category->clothings->count() > 0)
                             @php $firstClothing = $category->clothings->first(); @endphp
-                            <img src="{{ asset($firstClothing->file_path) }}" class="w-48 h-auto mx-auto rounded-lg clothing-img">
-                            <p class="mt-3 text-lg font-medium clothing-text">{{ $firstClothing->name }} - {{ $firstClothing->color }}</p>
+                            <div class="flex-shrink-0">
+                                <img src="{{ asset($firstClothing->file_path) }}" class="w-48 h-auto mx-auto rounded-lg clothing-img">
+                            </div>
+                            <div class="ml-4">
+                                <p class="mt-3 text-lg font-medium clothing-text">{{ $firstClothing->name }} - {{ $firstClothing->color }}</p>
+                            </div>
+                            <div class="ml-auto flex flex-col gap-2">
+                                <a href="{{ route('clothing.edit', $firstClothing ?? '') }}" class="text-blue-500 hover:text-blue-600 edit-button">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <form id="delete-form-{{ $category->id }}" action="{{ route('clothing.destroy', $firstClothing ?? '') }}" method="POST" class="delete-form">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="text-red-500 hover:text-red-600">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </form>
+                            </div>
                         @else
                             <p class="text-gray-500">No clothing available</p>
                         @endif
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="mt-4 flex flex-col gap-2">
-                        <a href="{{ route('clothing.edit', $firstClothing ?? '') }}" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">Edit</a>
-                        
-                        <!-- Delete Button and Form -->
-                        <form id="delete-form-{{ $category->id }}" action="{{ route('clothing.destroy', $firstClothing ?? '') }}" method="POST">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded">Delete</button>
-                        </form>
                     </div>
                 </div>
             @endforeach
@@ -59,24 +63,6 @@
 </div>
 
 <script>
-    function changeClothing(select, categoryId) {
-        const selectedOption = select.options[select.selectedIndex];
-        const clothingImage = selectedOption.getAttribute("data-img");
-        const clothingName = selectedOption.getAttribute("data-name");
-        const clothingColor = selectedOption.getAttribute("data-color");
-
-        // Update the displayed clothing item
-        const clothingDisplay = document.getElementById(`clothing-display-${categoryId}`);
-        clothingDisplay.innerHTML = `
-            <img src="${clothingImage}" class="w-48 h-auto mx-auto rounded-lg clothing-img">
-            <p class="mt-3 text-lg font-medium clothing-text">${clothingName} - ${clothingColor}</p>
-        `;
-
-        // Dynamically update the delete form action
-        const deleteForm = document.getElementById(`delete-form-${categoryId}`);
-        deleteForm.action = `/clothes/${selectedOption.value}`;
-    }
-
     // Function to fetch updated clothing list for each category
     function updateDropdowns() {
         document.querySelectorAll(".clothing-dropdown").forEach(dropdown => {

@@ -10,6 +10,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
     <!-- Vite (CSS & JS) -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -30,6 +31,32 @@
                 });
             }
         });
+    </script>
+
+    <script>
+        function changeClothing(select, categoryId) {
+            const selectedOption = select.options[select.selectedIndex];
+            const clothingImage = selectedOption.getAttribute("data-img");
+            const clothingName = selectedOption.getAttribute("data-name");
+            const clothingColor = selectedOption.getAttribute("data-color");
+            const clothingId = selectedOption.value;
+
+            // Update the image
+            const imageElement = document.querySelector(`#clothing-display-${categoryId} .clothing-img`);
+            imageElement.src = clothingImage;
+
+            // Update the text
+            const textElement = document.querySelector(`#clothing-display-${categoryId} .clothing-text`);
+            textElement.textContent = `${clothingName} - ${clothingColor}`;
+
+            // Update the edit button link
+            const editButton = document.querySelector(`#clothing-display-${categoryId} .edit-button`);
+            editButton.href = `/clothing/${clothingId}/edit`;
+
+            // Update the delete form action
+            const deleteForm = document.querySelector(`#clothing-display-${categoryId} .delete-form`);
+            deleteForm.action = `/clothing/${clothingId}`;
+        }
     </script>
 </head>
 
